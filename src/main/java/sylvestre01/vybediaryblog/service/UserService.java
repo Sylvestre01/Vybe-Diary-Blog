@@ -28,6 +28,4 @@ public interface UserService {
 
     UserProfile setOrUpdateInfo(UserPrincipal currentUser, InfoRequest infoRequest);
 
-
-
 }

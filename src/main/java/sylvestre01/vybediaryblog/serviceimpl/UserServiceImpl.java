@@ -1,5 +1,6 @@
 package sylvestre01.vybediaryblog.serviceimpl;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -7,19 +8,13 @@ import org.springframework.stereotype.Service;
 import sylvestre01.vybediaryblog.Security.UserPrincipal;
 import sylvestre01.vybediaryblog.exception.*;
 import sylvestre01.vybediaryblog.model.role.Role;
-import sylvestre01.vybediaryblog.model.role.RoleName;
 import sylvestre01.vybediaryblog.model.user.Address;
 import sylvestre01.vybediaryblog.model.user.User;
 import sylvestre01.vybediaryblog.payload.*;
 import sylvestre01.vybediaryblog.repository.PostRepository;
-import sylvestre01.vybediaryblog.repository.RoleRepository;
 import sylvestre01.vybediaryblog.repository.UserRepository;
 import sylvestre01.vybediaryblog.service.UserService;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+@AllArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -27,9 +22,9 @@ public class UserServiceImpl implements UserService {
 
     private PostRepository postRepository;
 
-    private RoleRepository roleRepository;
-
     private PasswordEncoder passwordEncoder;
+
+
 
     @Override
     public UserSummary getCurrentUser(UserPrincipal currentUser) {
@@ -47,11 +42,7 @@ public class UserServiceImpl implements UserService {
             ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "Email is already taken");
             throw new BadRequestException(apiResponse);
         }
-
-        List<Role> roles = new ArrayList<>();
-        roles.add(roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(() -> new AppException("User role not set")));
-        user.setRoles(roles);
-
+        user.setRole(user.getRole());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
@@ -61,7 +52,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", username));
         if (!user.getId().equals(currentUser.getId()) || !currentUser.getAuthorities()
-                .contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+                .contains(new SimpleGrantedAuthority(Role.ADMIN.toString()))) {
             ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to delete profile of: " + username);
             throw new AccessDeniedException(apiResponse);
         }
@@ -75,7 +66,7 @@ public class UserServiceImpl implements UserService {
     public User updateUser(User newUser, String username, UserPrincipal currentUser) {
         User user = userRepository.getUserByName(username);
         if(user.getId().equals(currentUser.getId())
-        || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+        || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(Role.ADMIN.toString()))) {
             user.setFirstName(newUser.getFirstName());
             user.setLastName(newUser.getLastName());
             user.setPassword(newUser.getPassword());
@@ -112,10 +103,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse giveAdmin(String username) {
         User user = userRepository.getUserByName(username);
-        List<Role> roles = new ArrayList<>();
-        roles.add(roleRepository.findByName(RoleName.ROLE_ADMIN).orElseThrow(()-> new AppException("User role not set")));
-        roles.add(roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(()-> new AppException("User role not set")));
-        user.setRoles(roles);
+        user.setRole(Role.ADMIN);
         userRepository.save(user);
         return new ApiResponse(Boolean.TRUE, "You gave ADMIN role from: " + username);
 
@@ -124,9 +112,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse removeAdmin(String username) {
         User user = userRepository.getUserByName(username);
-        List<Role> roles = new ArrayList<>();
-        roles.add(roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(()-> new AppException("User role not set")));
-        user.setRoles(roles);
+        user.setRole(Role.USER);
         userRepository.save(user);
 
         return new ApiResponse(Boolean.TRUE, "you took ADMIN role from " + username);
@@ -138,7 +124,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(()-> new ResourceNotFoundException("User", "username", currentUser.getUsername()));
         Address address = new Address(infoRequest.getStreet(), infoRequest.getSuite(), infoRequest.getCity(), infoRequest.getZipcode(), user);
         if(user.getId().equals(currentUser.getId())
-            || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))) {
+            || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(Role.ADMIN.toString()))) {
             user.setAddress(address);
             user.setWebsite(infoRequest.getWebsite());
             user.setPhone(infoRequest.getPhone());
@@ -156,6 +142,7 @@ public class UserServiceImpl implements UserService {
 
 
     }
+
 
 
 

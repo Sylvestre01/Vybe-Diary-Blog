@@ -22,33 +22,26 @@ public class UserPrincipal implements UserDetails {
 
     private String userName;
 
+    @JsonIgnore
     private String email;
 
+    @JsonIgnore
     private String password;
 
-    private Collection<? extends GrantedAuthority> authorities;
+    private List<GrantedAuthority> authorities;
 
-    public UserPrincipal(Long id, String firstName, String lastName, String userName, String email, String password, Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userName = userName;
-        this.email = email;
-        this.password = password;
-
-        if (authorities == null) {
-            this.authorities = null;
-        } else {
-            this.authorities = new ArrayList<>(authorities);
-        }
-    }
-
-    public static UserPrincipal create(User user) {
-        List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toList());
-
-        return new UserPrincipal(user.getId(), user.getFirstName(), user.getLastName(), user.getUsername(),
-                user.getEmail(), user.getPassword(), authorities);
+    public UserPrincipal(User user) {
+        this.id = user.getId();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.userName = user.getUsername();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        for (String userAuthority : user.getRole().toString().split(",")) {
+            SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(userAuthority);
+            grantedAuthorities.add(simpleGrantedAuthority);}
+        this.authorities = grantedAuthorities;
     }
 
     public Long getId() {
@@ -61,7 +54,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities == null ? null : new ArrayList<>(authorities);
+        return authorities;
     }
 
     @Override

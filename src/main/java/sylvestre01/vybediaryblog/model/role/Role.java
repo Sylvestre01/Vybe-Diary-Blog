@@ -1,23 +1,12 @@
 package sylvestre01.vybediaryblog.model.role;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+public enum Role {
+    ADMIN("Admin"),
+    USER("User");
 
-import javax.persistence.*;
+    private String display;
 
-@Entity
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "roles")
-public class Role {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "name")
-    private RoleName name;
+    Role(String display) {
+        this.display = display;
+    }
 }
