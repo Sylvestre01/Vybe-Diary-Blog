@@ -1,5 +1,6 @@
 package sylvestre01.vybediaryblog.controller;
 
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,12 +15,12 @@ import sylvestre01.vybediaryblog.service.UserService;
 
 import javax.validation.Valid;
 
-@RequiredArgsConstructor
+
 @RestController
 @RequestMapping("/api/v1")
 public class UserController {
     @Autowired
-    private final UserService userService;
+    private UserService userService;
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")

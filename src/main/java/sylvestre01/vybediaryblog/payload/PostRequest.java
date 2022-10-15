@@ -25,16 +25,19 @@ public class PostRequest {
     private List<String> tags;
 
     public List<String> getTags() {
-
-        return tags == null ? Collections.emptyList() : new ArrayList<>(tags);
+        return tags;
     }
 
     public void setTags(List<String> tags) {
-
-        if (tags == null) {
-            this.tags = null;
-        } else {
-            this.tags = Collections.unmodifiableList(tags);
-        }
+        this.tags = tags;
     }
+
+    //    public void setTags(List<String> tags) {
+//
+//        if (tags == null) {
+//            this.tags = null;
+//        } else {
+//            this.tags = Collections.unmodifiableList(tags);
+//        }
+//    }
 }

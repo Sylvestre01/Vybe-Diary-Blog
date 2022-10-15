@@ -1,27 +1,24 @@
 package sylvestre01.vybediaryblog.model.audit;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
+import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
 
-import javax.persistence.*;
-
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+import java.util.Objects;
 
 @MappedSuperclass
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @JsonIgnoreProperties(
         value = { "createdBY", "updatedBy" },
-        allowGetters = true
-)
-public abstract class UserDateAudit extends DateAudit {
-    private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+        allowGetters = true)
+public abstract class UserBaseClass extends BaseClass{
 
     @CreatedBy
     @Column(updatable = false)
@@ -29,4 +26,5 @@ public abstract class UserDateAudit extends DateAudit {
 
     @LastModifiedBy
     private Long updatedBy;
+
 }

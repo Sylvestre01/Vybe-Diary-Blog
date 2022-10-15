@@ -2,6 +2,7 @@ package sylvestre01.vybediaryblog.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,16 +24,10 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1")
-@RequiredArgsConstructor
-@Slf4j
 public class AuthController {
 
-    private final AuthService authService;
-
-    private AuthenticationManager authenticationManager;
-
-    private JwtTokenProvider jwtTokenProvider;
-
+    @Autowired
+    private AuthService authService;
 
     @PostMapping("auth/register")
     public ResponseEntity<UserRegistrationResponse> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {

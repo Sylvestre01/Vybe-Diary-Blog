@@ -3,7 +3,8 @@ package sylvestre01.vybediaryblog.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
-import sylvestre01.vybediaryblog.model.audit.UserDateAudit;
+import sylvestre01.vybediaryblog.model.audit.BaseClass;
+import sylvestre01.vybediaryblog.model.audit.UserBaseClass;
 import sylvestre01.vybediaryblog.model.user.User;
 
 import javax.persistence.*;
@@ -15,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "albums")
-public class Album extends UserDateAudit {
+public class Album extends UserBaseClass {
 
 
     @Column(name = "title")

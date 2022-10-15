@@ -2,6 +2,7 @@ package sylvestre01.vybediaryblog.serviceimpl;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sylvestre01.vybediaryblog.exception.ResourceNotFoundException;
@@ -14,21 +15,26 @@ import sylvestre01.vybediaryblog.service.AuthService;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
 @Service
 public class AuthServiceImpl implements AuthService {
 
+
     private UserRepository userRepository;
 
-    private PasswordEncoder passwordEncoder;
 
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public UserRegistrationResponse registerUser(SignUpRequest signUpRequest) {
-        String email = signUpRequest.getUsername();
+        String email = signUpRequest.getEmail();
 
-        Boolean existingUser = userRepository.existsByUsername(email);
-        if (existingUser == null) {
+        boolean existingUser = userRepository.existsByEmail(email);
+        if (!existingUser) {
             User user = new User();
 
             user.setFirstName(signUpRequest.getFirstName().toLowerCase());
@@ -42,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
             return new UserRegistrationResponse("success", LocalDateTime.now());
 
         } else {
-            return new UserRegistrationResponse("unsuccessful registration", LocalDateTime.now());
+            throw new ResourceNotFoundException("user already exists");
         }
     }
 }

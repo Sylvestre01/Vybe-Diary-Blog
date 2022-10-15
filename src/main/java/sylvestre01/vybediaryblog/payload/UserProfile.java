@@ -21,5 +21,7 @@ public class UserProfile {
     private Address address;
     private String phone;
     private String website;
-    private Long postCount;
+
+    public UserProfile(Long id, String username, String firstName, String lastName, Instant now, String email, Address address, String phone, String website, Long postCount) {
+    }
 }

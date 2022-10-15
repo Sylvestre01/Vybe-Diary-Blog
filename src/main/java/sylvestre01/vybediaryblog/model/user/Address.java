@@ -1,7 +1,8 @@
 package sylvestre01.vybediaryblog.model.user;
 
 import lombok.*;
-import sylvestre01.vybediaryblog.model.audit.UserDateAudit;
+import sylvestre01.vybediaryblog.model.audit.BaseClass;
+import sylvestre01.vybediaryblog.model.audit.UserBaseClass;
 
 import javax.persistence.*;
 
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "address")
-public class Address extends UserDateAudit {
+public class Address extends UserBaseClass {
 
     private String street;
 

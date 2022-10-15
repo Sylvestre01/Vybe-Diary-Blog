@@ -5,7 +5,6 @@ import sylvestre01.vybediaryblog.Security.UserPrincipal;
 import sylvestre01.vybediaryblog.model.user.User;
 import sylvestre01.vybediaryblog.payload.*;
 
-@Service
 public interface UserService {
 
     UserSummary getCurrentUser(UserPrincipal currentUser);

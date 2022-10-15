@@ -1,9 +1,9 @@
 package sylvestre01.vybediaryblog.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
-import sylvestre01.vybediaryblog.model.audit.UserDateAudit;
+import sylvestre01.vybediaryblog.model.audit.BaseClass;
+import sylvestre01.vybediaryblog.model.audit.UserBaseClass;
 import sylvestre01.vybediaryblog.model.user.User;
 
 import javax.persistence.*;
@@ -15,18 +15,17 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "posts")
-public class Post extends UserDateAudit {
+public class Post extends UserBaseClass {
 
     private String title;
 
-    @Column(name = "body")
     private String body;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
