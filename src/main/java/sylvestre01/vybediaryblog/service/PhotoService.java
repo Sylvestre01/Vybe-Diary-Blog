@@ -1,10 +1,10 @@
 package sylvestre01.vybediaryblog.service;
 
 import sylvestre01.vybediaryblog.Security.UserPrincipal;
-import sylvestre01.vybediaryblog.payload.ApiResponse;
-import sylvestre01.vybediaryblog.payload.PagedResponse;
-import sylvestre01.vybediaryblog.payload.PhotoRequest;
-import sylvestre01.vybediaryblog.payload.PhotoResponse;
+import sylvestre01.vybediaryblog.response.ApiResponse;
+import sylvestre01.vybediaryblog.response.PagedResponse;
+import sylvestre01.vybediaryblog.payload.PhotoPayload;
+import sylvestre01.vybediaryblog.response.PhotoResponse;
 
 public interface PhotoService {
 
@@ -12,9 +12,9 @@ public interface PhotoService {
 
     PhotoResponse getPhoto(Long id);
 
-    PhotoResponse updatePhoto(Long id, PhotoRequest photoRequest, UserPrincipal currentUser);
+    PhotoResponse updatePhoto(Long id, PhotoPayload photoRequest, UserPrincipal currentUser);
 
-    PhotoResponse addPhoto(PhotoRequest photoRequest, UserPrincipal currentUser);
+    PhotoResponse addPhoto(PhotoPayload photoRequest, UserPrincipal currentUser);
 
     ApiResponse deletePhoto(Long id, UserPrincipal currentUser);
 

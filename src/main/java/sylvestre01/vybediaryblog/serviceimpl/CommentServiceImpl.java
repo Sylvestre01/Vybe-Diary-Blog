@@ -15,14 +15,16 @@ import sylvestre01.vybediaryblog.model.Comment;
 import sylvestre01.vybediaryblog.model.Post;
 import sylvestre01.vybediaryblog.model.role.Role;
 import sylvestre01.vybediaryblog.model.user.User;
-import sylvestre01.vybediaryblog.payload.ApiResponse;
-import sylvestre01.vybediaryblog.payload.CommentRequest;
-import sylvestre01.vybediaryblog.payload.PagedResponse;
+import sylvestre01.vybediaryblog.response.ApiResponse;
+import sylvestre01.vybediaryblog.payload.CommentPayload;
+import sylvestre01.vybediaryblog.response.PagedResponse;
 import sylvestre01.vybediaryblog.repository.CommentRepository;
 import sylvestre01.vybediaryblog.repository.PostRepository;
 import sylvestre01.vybediaryblog.repository.UserRepository;
 import sylvestre01.vybediaryblog.service.CommentService;
 import sylvestre01.vybediaryblog.utils.AppUtils;
+
+import java.time.LocalDateTime;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -53,7 +55,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment addComment(CommentRequest commentRequest, Long postId, UserPrincipal currentUser) {
+    public Comment addComment(CommentPayload commentRequest, Long postId, UserPrincipal currentUser) {
         User user = userRepository.getUser(currentUser);
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post Id was not found"));
@@ -78,7 +80,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment updateComment(Long postId, Long id, CommentRequest commentRequest, UserPrincipal currentUser) {
+    public Comment updateComment(Long postId, Long id, CommentPayload commentRequest, UserPrincipal currentUser) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post Id was not found"));
         Comment comment = commentRepository.findById(id)
@@ -105,13 +107,13 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new ResourceNotFoundException("comment id was not found"));
 
         if (!comment.getPost().getId().equals(post.getId())) {
-            return new ApiResponse(Boolean.FALSE, "Comment does not belong to post");
+            return new ApiResponse("Comment does not belong to post", LocalDateTime.now());
         }
 
         if (comment.getUser().getId().equals(currentUser.getId())
                 || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(Role.ADMIN.toString()))) {
             commentRepository.deleteById(comment.getId());
-            return new ApiResponse(Boolean.TRUE, "You successfully deleted comment");
+            return new ApiResponse("You successfully deleted comment", LocalDateTime.now());
         }
 
         throw new BlogapiException(HttpStatus.UNAUTHORIZED, "You don't have permission to delete this comment");

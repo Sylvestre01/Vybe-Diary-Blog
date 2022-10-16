@@ -2,7 +2,7 @@ package sylvestre01.vybediaryblog.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import sylvestre01.vybediaryblog.payload.ApiResponse;
+import sylvestre01.vybediaryblog.response.ApiResponse;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class BadRequestException extends RuntimeException{

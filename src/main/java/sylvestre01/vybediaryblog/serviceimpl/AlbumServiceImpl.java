@@ -3,7 +3,6 @@ package sylvestre01.vybediaryblog.serviceimpl;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,15 +17,16 @@ import sylvestre01.vybediaryblog.exception.ResourceNotFoundException;
 import sylvestre01.vybediaryblog.model.Album;
 import sylvestre01.vybediaryblog.model.role.Role;
 import sylvestre01.vybediaryblog.model.user.User;
-import sylvestre01.vybediaryblog.payload.AlbumRequest;
-import sylvestre01.vybediaryblog.payload.AlbumResponse;
-import sylvestre01.vybediaryblog.payload.ApiResponse;
-import sylvestre01.vybediaryblog.payload.PagedResponse;
+import sylvestre01.vybediaryblog.payload.AlbumPayload;
+import sylvestre01.vybediaryblog.response.AlbumResponse;
+import sylvestre01.vybediaryblog.response.ApiResponse;
+import sylvestre01.vybediaryblog.response.PagedResponse;
 import sylvestre01.vybediaryblog.repository.AlbumRepository;
 import sylvestre01.vybediaryblog.repository.UserRepository;
 import sylvestre01.vybediaryblog.service.AlbumService;
 import sylvestre01.vybediaryblog.utils.AppUtils;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -68,7 +68,7 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public ResponseEntity<Album> addAlbum(AlbumRequest albumRequest, UserPrincipal currentUser) {
+    public ResponseEntity<Album> addAlbum(AlbumPayload albumRequest, UserPrincipal currentUser) {
         User user = userRepository.getUser(currentUser);
         Album album = new Album();
         modelMapper.map(albumRequest, album);
@@ -85,7 +85,7 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public ResponseEntity<AlbumResponse> updateAlbum(Long id, AlbumRequest newAlbum, UserPrincipal currentUser) {
+    public ResponseEntity<AlbumResponse> updateAlbum(Long id, AlbumPayload newAlbum, UserPrincipal currentUser) {
         Album album = albumRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("album id not found"));
         User user = userRepository.getUser(currentUser);
         if (album.getUser().getId().equals(user.getId()) || currentUser.getAuthorities()
@@ -111,7 +111,7 @@ public class AlbumServiceImpl implements AlbumService {
         if (album.getUser().getId().equals(user.getId()) || currentUser.getAuthorities()
                 .contains(new SimpleGrantedAuthority(Role.ADMIN.toString()))) {
             albumRepository.deleteById(id);
-            return new ResponseEntity<>(new ApiResponse(Boolean.TRUE, "You successfully deleted album"), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("You successfully deleted album", LocalDateTime.now()), HttpStatus.OK);
         }
 
         throw new BlogapiException(HttpStatus.UNAUTHORIZED, "You don't have permission to make this operation");

@@ -3,7 +3,7 @@ package sylvestre01.vybediaryblog.exception;
 import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import sylvestre01.vybediaryblog.payload.ApiResponse;
+import sylvestre01.vybediaryblog.response.ApiResponse;
 @Data
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class ResourceNotFoundException  extends RuntimeException{

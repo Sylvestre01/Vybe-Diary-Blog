@@ -1,12 +1,11 @@
 package sylvestre01.vybediaryblog.payload;
 
 import lombok.Data;
-import sylvestre01.vybediaryblog.model.role.Role;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 @Data
-public class SignUpRequest {
+public class SignUpPayload {
 
 
     @Size(min = 4, max = 40)

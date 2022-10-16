@@ -16,10 +16,10 @@ import sylvestre01.vybediaryblog.model.Post;
 import sylvestre01.vybediaryblog.model.Tag;
 import sylvestre01.vybediaryblog.model.role.Role;
 import sylvestre01.vybediaryblog.model.user.User;
-import sylvestre01.vybediaryblog.payload.ApiResponse;
-import sylvestre01.vybediaryblog.payload.PagedResponse;
-import sylvestre01.vybediaryblog.payload.PostRequest;
-import sylvestre01.vybediaryblog.payload.PostResponse;
+import sylvestre01.vybediaryblog.response.ApiResponse;
+import sylvestre01.vybediaryblog.response.PagedResponse;
+import sylvestre01.vybediaryblog.payload.PostPayload;
+import sylvestre01.vybediaryblog.response.PostResponse;
 import sylvestre01.vybediaryblog.repository.CategoryRepository;
 import sylvestre01.vybediaryblog.repository.PostRepository;
 import sylvestre01.vybediaryblog.repository.TagRepository;
@@ -28,7 +28,7 @@ import sylvestre01.vybediaryblog.service.PostService;
 import sylvestre01.vybediaryblog.utils.AppConstant;
 import sylvestre01.vybediaryblog.utils.AppUtils;
 
-import javax.persistence.Access;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -56,7 +56,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse addPost(PostRequest postRequest, UserPrincipal currentUser) {
+    public PostResponse addPost(PostPayload postRequest, UserPrincipal currentUser) {
         User user = userRepository.findById(currentUser.getId()).orElseThrow(()-> new ResourceNotFoundException("User Id is not found"));
         Category category = categoryRepository.findById(postRequest.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("category id was not found"));
@@ -151,7 +151,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post updatePost(Long id, PostRequest newPostRequest, UserPrincipal currentUser) {
+    public Post updatePost(Long id, PostPayload newPostRequest, UserPrincipal currentUser) {
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("post id was not found"));
         Category category = categoryRepository.findById(newPostRequest.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("category id was not found"));
@@ -162,7 +162,7 @@ public class PostServiceImpl implements PostService {
             post.setCategory(category);
             return postRepository.save(post);
         }
-        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to edit this post");
+        ApiResponse apiResponse = new ApiResponse("You don't have permission to edit this post", LocalDateTime.now());
 
         throw new UnauthorizedException(apiResponse);
     }
@@ -173,10 +173,10 @@ public class PostServiceImpl implements PostService {
             if (post.getUser().getId().equals(currentUser.getId())
                     || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(Role.ADMIN.toString()))) {
                 postRepository.deleteById(id);
-                return new ApiResponse(Boolean.TRUE, "You successfully deleted post");
+                return new ApiResponse("You successfully deleted post", LocalDateTime.now());
             }
 
-            ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to delete this post");
+            ApiResponse apiResponse = new ApiResponse("You don't have permission to delete this post", LocalDateTime.now());
 
             throw new UnauthorizedException(apiResponse);
     }

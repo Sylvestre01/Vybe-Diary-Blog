@@ -13,16 +13,17 @@ import sylvestre01.vybediaryblog.exception.UnauthorizedException;
 import sylvestre01.vybediaryblog.model.Album;
 import sylvestre01.vybediaryblog.model.Photo;
 import sylvestre01.vybediaryblog.model.role.Role;
-import sylvestre01.vybediaryblog.payload.ApiResponse;
-import sylvestre01.vybediaryblog.payload.PagedResponse;
-import sylvestre01.vybediaryblog.payload.PhotoRequest;
-import sylvestre01.vybediaryblog.payload.PhotoResponse;
+import sylvestre01.vybediaryblog.response.ApiResponse;
+import sylvestre01.vybediaryblog.response.PagedResponse;
+import sylvestre01.vybediaryblog.payload.PhotoPayload;
+import sylvestre01.vybediaryblog.response.PhotoResponse;
 import sylvestre01.vybediaryblog.repository.AlbumRepository;
 import sylvestre01.vybediaryblog.repository.PhotoRepository;
 import sylvestre01.vybediaryblog.service.PhotoService;
 import sylvestre01.vybediaryblog.utils.AppConstant;
 import sylvestre01.vybediaryblog.utils.AppUtils;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -69,7 +70,7 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public PhotoResponse updatePhoto(Long id, PhotoRequest photoRequest, UserPrincipal currentUser) {
+    public PhotoResponse updatePhoto(Long id, PhotoPayload photoRequest, UserPrincipal currentUser) {
         Album album = albumRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("album id could not be found"));
         Photo photo = photoRepository.findById(id)
@@ -83,7 +84,7 @@ public class PhotoServiceImpl implements PhotoService {
             return new PhotoResponse(updatedPhoto.getId(), updatedPhoto.getTitle(),
                     updatedPhoto.getUrl(), updatedPhoto.getThumbnailUrl(), updatedPhoto.getAlbum().getId());
         }
-        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to update this photo");
+        ApiResponse apiResponse = new ApiResponse("You don't have permission to update this photo", LocalDateTime.now());
 
         throw new UnauthorizedException(apiResponse);
     }
@@ -91,7 +92,7 @@ public class PhotoServiceImpl implements PhotoService {
 
 
     @Override
-    public PhotoResponse addPhoto(PhotoRequest photoRequest, UserPrincipal currentUser) {
+    public PhotoResponse addPhoto(PhotoPayload photoRequest, UserPrincipal currentUser) {
         Album album = albumRepository.findById(photoRequest.getAlbumId())
                 .orElseThrow(()-> new ResourceNotFoundException("album id could not be found"));
         if(album.getUser().getId().equals(currentUser.getId())) {
@@ -100,7 +101,7 @@ public class PhotoServiceImpl implements PhotoService {
             return new PhotoResponse(newPhoto.getId(), newPhoto.getTitle(),
                     newPhoto.getUrl(), newPhoto.getThumbnailUrl(), newPhoto.getAlbum().getId());
         }
-        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to add photo in this album");
+        ApiResponse apiResponse = new ApiResponse("You don't have permission to add photo in this album", LocalDateTime.now());
 
         throw new UnauthorizedException(apiResponse);
     }
@@ -111,10 +112,9 @@ public class PhotoServiceImpl implements PhotoService {
         if (photo.getAlbum().getUser().getId().equals(currentUser.getId())
                 || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(Role.ADMIN.toString()))) {
             photoRepository.deleteById(id);
-            return new ApiResponse(Boolean.TRUE, "Photo deleted successfully");
+            return new ApiResponse("Photo deleted successfully", LocalDateTime.now());
         }
-
-        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to delete this photo");
+        ApiResponse apiResponse = new ApiResponse("You don't have permission to delete this photo", LocalDateTime.now());
 
         throw new UnauthorizedException(apiResponse);
 

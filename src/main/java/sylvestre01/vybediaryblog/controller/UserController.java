@@ -1,7 +1,5 @@
 package sylvestre01.vybediaryblog.controller;
 
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,23 +7,40 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import sylvestre01.vybediaryblog.Security.CurrentUser;
 import sylvestre01.vybediaryblog.Security.UserPrincipal;
+import sylvestre01.vybediaryblog.model.Album;
+import sylvestre01.vybediaryblog.model.Post;
 import sylvestre01.vybediaryblog.model.user.User;
 import sylvestre01.vybediaryblog.payload.*;
+import sylvestre01.vybediaryblog.response.ApiResponse;
+import sylvestre01.vybediaryblog.response.PagedResponse;
+import sylvestre01.vybediaryblog.service.AlbumService;
+import sylvestre01.vybediaryblog.service.PostService;
 import sylvestre01.vybediaryblog.service.UserService;
 
 import javax.validation.Valid;
 
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/users")
 public class UserController {
-    @Autowired
+
     private UserService userService;
+
+    private PostService postService;
+
+    private AlbumService albumService;
+
+    @Autowired
+    public UserController(UserService userService, PostService postService, AlbumService albumService) {
+        this.userService = userService;
+        this.postService = postService;
+        this.albumService = albumService;
+    }
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<UserSummary> getCurrentUser(@CurrentUser UserPrincipal currentUser) {
-        UserSummary userSummary = userService.getCurrentUser(currentUser);
+    public ResponseEntity<UserSummaryPayload> getCurrentUser(@CurrentUser UserPrincipal currentUser) {
+        UserSummaryPayload userSummary = userService.getCurrentUser(currentUser);
         return new ResponseEntity<>(userSummary, HttpStatus.OK);
     }
 
@@ -42,9 +57,25 @@ public class UserController {
     }
 
     @GetMapping("/{username}/profile")
-    public ResponseEntity<UserProfile> getUserProfile(@PathVariable(value = "username") String username) {
-        UserProfile userProfile = userService.getUserProfile(username);
+    public ResponseEntity<UserProfilePayload> getUserProfile(@PathVariable(value = "username") String username) {
+        UserProfilePayload userProfile = userService.getUserProfile(username);
         return new ResponseEntity<>(userProfile, HttpStatus.OK);
+    }
+
+    @GetMapping("/{username}/posts")
+    public ResponseEntity<PagedResponse<Post>> getPostsCreatedBy(@PathVariable(value = "username") String username,
+                                                                 @RequestParam(value = "page") Integer page,
+                                                                 @RequestParam(value = "size") Integer size) {
+        PagedResponse<Post> response = postService.getPostsByCreatedBy(username, page, size);
+        return new ResponseEntity<  >(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/{username}/albums")
+    public ResponseEntity<PagedResponse<Album>> getUserAlbums(@PathVariable(name = "username") String username,
+                                                              @RequestParam(name = "page") Integer page,
+                                                              @RequestParam(name = "size") Integer size) {
+        PagedResponse<Album> response = albumService.getUserAlbums(username, page, size);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping
@@ -84,17 +115,9 @@ public class UserController {
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 
-    public ResponseEntity<UserProfile> setAddress(@CurrentUser UserPrincipal currentUser,
-                                                  @Valid @RequestBody InfoRequest infoRequest) {
-        UserProfile userProfile = userService.setOrUpdateInfo(currentUser, infoRequest);
+    public ResponseEntity<UserProfilePayload> setAddress(@CurrentUser UserPrincipal currentUser,
+                                                         @Valid @RequestBody InfoPayload infoRequest) {
+        UserProfilePayload userProfile = userService.setOrUpdateInfo(currentUser, infoRequest);
         return new ResponseEntity<>(userProfile, HttpStatus.OK);
-
     }
-
-
-
-
-
-
-
 }

@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 @AllArgsConstructor
-public class InfoRequest {
+public class InfoPayload {
 
     @NotBlank
     private String street;

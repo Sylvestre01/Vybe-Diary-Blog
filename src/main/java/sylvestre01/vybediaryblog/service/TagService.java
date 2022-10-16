@@ -2,8 +2,8 @@ package sylvestre01.vybediaryblog.service;
 
 import sylvestre01.vybediaryblog.Security.UserPrincipal;
 import sylvestre01.vybediaryblog.model.Tag;
-import sylvestre01.vybediaryblog.payload.ApiResponse;
-import sylvestre01.vybediaryblog.payload.PagedResponse;
+import sylvestre01.vybediaryblog.response.ApiResponse;
+import sylvestre01.vybediaryblog.response.PagedResponse;
 
 public interface TagService {
 

@@ -1,8 +1,5 @@
 package sylvestre01.vybediaryblog.serviceimpl;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,9 +13,11 @@ import sylvestre01.vybediaryblog.model.user.User;
 import sylvestre01.vybediaryblog.payload.*;
 import sylvestre01.vybediaryblog.repository.PostRepository;
 import sylvestre01.vybediaryblog.repository.UserRepository;
+import sylvestre01.vybediaryblog.response.ApiResponse;
 import sylvestre01.vybediaryblog.service.UserService;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -38,19 +37,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserSummary getCurrentUser(UserPrincipal currentUser) {
-        return new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getFirstName(),
+    public UserSummaryPayload getCurrentUser(UserPrincipal currentUser) {
+        return new UserSummaryPayload(currentUser.getId(), currentUser.getUsername(), currentUser.getFirstName(),
         currentUser.getLastName());
     }
 
     @Override
     public User addUser(User user) {
         if(userRepository.existsByUsername(user.getUsername())) {
-            ApiResponse apiResponse = new ApiResponse(Boolean.TRUE, "Username is already taken");
+            ApiResponse apiResponse = new ApiResponse("Username is already taken", LocalDateTime.now());
             throw new BadRequestException(apiResponse);
         }
         if (userRepository.existsByEmail(user.getEmail())) {
-            ApiResponse apiResponse = new ApiResponse(Boolean.TRUE, "Email is already taken");
+            ApiResponse apiResponse = new ApiResponse("Email is already taken", LocalDateTime.now());
             throw new BadRequestException(apiResponse);
         }
         user.setRole(user.getRole());
@@ -64,13 +63,13 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("Username cannot be found"));
         if (!user.getId().equals(currentUser.getId()) || !currentUser.getAuthorities()
                 .contains(new SimpleGrantedAuthority(Role.ADMIN.toString()))) {
-            ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to delete profile of: " + username);
+            ApiResponse apiResponse = new ApiResponse("You don't have permission to delete profile of: " + username, LocalDateTime.now());
             throw new AccessDeniedException(apiResponse);
         }
 
         userRepository.deleteById(user.getId());
 
-        return new ApiResponse(Boolean.TRUE, "You successfully deleted profile of: " + username);
+        return new ApiResponse("You successfully deleted profile of: " + username, LocalDateTime.now());
     }
 
     @Override
@@ -86,7 +85,7 @@ public class UserServiceImpl implements UserService {
             user.setWebsite(newUser.getWebsite());
             return userRepository.save(user);
         }
-        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to update profile of: " + username);
+        ApiResponse apiResponse = new ApiResponse("You don't have permission to update profile of: " + username, LocalDateTime.now(), HttpStatus.UNAUTHORIZED);
         throw new UnauthorizedException(apiResponse);
     }
 
@@ -103,11 +102,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserProfile getUserProfile(String username) {
+    public UserProfilePayload getUserProfile(String username) {
         User user = userRepository.getUserByName(username);
         Long postCount = postRepository.countByCreatedBy(user.getId());
 
-        return new UserProfile(user.getId(), user.getUsername(), user.getFirstName(),
+        return new UserProfilePayload(user.getId(), user.getUsername(), user.getFirstName(),
                 user.getLastName(), Instant.now(), user.getEmail(),
                 user.getAddress(), user.getPhone(), user.getWebsite(), postCount);
     }
@@ -117,7 +116,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.getUserByName(username);
         user.setRole(Role.ADMIN);
         userRepository.save(user);
-        return new ApiResponse(Boolean.TRUE, "You gave ADMIN role from: " + username);
+        return new ApiResponse("You gave ADMIN role from: " + username, LocalDateTime.now());
 
     }
 
@@ -127,11 +126,11 @@ public class UserServiceImpl implements UserService {
         user.setRole(Role.USER);
         userRepository.save(user);
 
-        return new ApiResponse(Boolean.TRUE, "you took ADMIN role from " + username);
+        return new ApiResponse("you took ADMIN role from " + username, LocalDateTime.now());
     }
 
     @Override
-    public UserProfile setOrUpdateInfo(UserPrincipal currentUser, InfoRequest infoRequest) {
+    public UserProfilePayload setOrUpdateInfo(UserPrincipal currentUser, InfoPayload infoRequest) {
         User user = userRepository.findByUsername(currentUser.getUsername())
                 .orElseThrow(()-> new ResourceNotFoundException("Username cannot be found"));
         Address address = new Address(infoRequest.getStreet(), infoRequest.getSuite(), infoRequest.getCity(), infoRequest.getZipcode(), user);
@@ -144,16 +143,14 @@ public class UserServiceImpl implements UserService {
 
             Long postCount = postRepository.countByCreatedBy(updatedUser.getId());
 
-            return new UserProfile(updatedUser.getId(), updatedUser.getUsername(), updatedUser.getFirstName(),
+            return new UserProfilePayload(updatedUser.getId(), updatedUser.getUsername(), updatedUser.getFirstName(),
                     updatedUser.getLastName(), Instant.now(), updatedUser.getEmail(), updatedUser.getAddress(),
                     updatedUser.getPhone(), updatedUser.getWebsite(), postCount);
         }
-        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to update users profile", HttpStatus.FORBIDDEN);
+        ApiResponse apiResponse = new ApiResponse("You don't have permission to update users profile", LocalDateTime.now(), HttpStatus.FORBIDDEN);
         throw new AccessDeniedException(apiResponse);
     }
-
-
-    }
+}
 
 
 

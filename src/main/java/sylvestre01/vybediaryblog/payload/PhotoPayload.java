@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-public class PhotoRequest {
+public class PhotoPayload {
 
     @NotBlank
     @Size(min = 3)

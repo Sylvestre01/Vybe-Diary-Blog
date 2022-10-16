@@ -10,7 +10,7 @@ import java.time.Instant;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserProfile {
+public class UserProfilePayload {
 
     private Long id;
     private String username;
@@ -22,6 +22,6 @@ public class UserProfile {
     private String phone;
     private String website;
 
-    public UserProfile(Long id, String username, String firstName, String lastName, Instant now, String email, Address address, String phone, String website, Long postCount) {
+    public UserProfilePayload(Long id, String username, String firstName, String lastName, Instant now, String email, Address address, String phone, String website, Long postCount) {
     }
 }

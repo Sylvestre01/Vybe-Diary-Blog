@@ -1,6 +1,5 @@
 package sylvestre01.vybediaryblog.serviceimpl;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,12 +14,13 @@ import sylvestre01.vybediaryblog.exception.ResourceNotFoundException;
 import sylvestre01.vybediaryblog.exception.UnauthorizedException;
 import sylvestre01.vybediaryblog.model.Category;
 import sylvestre01.vybediaryblog.model.role.Role;
-import sylvestre01.vybediaryblog.payload.ApiResponse;
-import sylvestre01.vybediaryblog.payload.PagedResponse;
+import sylvestre01.vybediaryblog.response.ApiResponse;
+import sylvestre01.vybediaryblog.response.PagedResponse;
 import sylvestre01.vybediaryblog.repository.CategoryRepository;
 import sylvestre01.vybediaryblog.service.CategoryService;
 import sylvestre01.vybediaryblog.utils.AppUtils;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -80,8 +80,10 @@ public class CategoryServiceImpl implements CategoryService {
         if (category.getCreateDate().equals(currentUser.getId()) || currentUser.getAuthorities()
                 .contains(new SimpleGrantedAuthority(Role.ADMIN.toString()))) {
             categoryRepository.deleteById(id);
-            return new ResponseEntity<>(new ApiResponse(Boolean.TRUE, "You successfully deleted category"), HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("You successfully deleted category", LocalDateTime.now()), HttpStatus.OK);
         }
         throw new UnauthorizedException("You don't have permission to delete this category");
+            }
     }
-}
+
+

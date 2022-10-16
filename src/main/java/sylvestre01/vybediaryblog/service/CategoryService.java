@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service;
 import sylvestre01.vybediaryblog.Security.UserPrincipal;
 import sylvestre01.vybediaryblog.exception.UnauthorizedException;
 import sylvestre01.vybediaryblog.model.Category;
-import sylvestre01.vybediaryblog.payload.ApiResponse;
-import sylvestre01.vybediaryblog.payload.PagedResponse;
+import sylvestre01.vybediaryblog.response.ApiResponse;
+import sylvestre01.vybediaryblog.response.PagedResponse;
 @Service
 public interface CategoryService {
 

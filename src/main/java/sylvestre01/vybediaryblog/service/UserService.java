@@ -1,13 +1,13 @@
 package sylvestre01.vybediaryblog.service;
 
-import org.springframework.stereotype.Service;
 import sylvestre01.vybediaryblog.Security.UserPrincipal;
 import sylvestre01.vybediaryblog.model.user.User;
 import sylvestre01.vybediaryblog.payload.*;
+import sylvestre01.vybediaryblog.response.ApiResponse;
 
 public interface UserService {
 
-    UserSummary getCurrentUser(UserPrincipal currentUser);
+    UserSummaryPayload getCurrentUser(UserPrincipal currentUser);
 
     User addUser(User user);
 
@@ -19,12 +19,12 @@ public interface UserService {
 
     UserIdentityAvailability checkEmailAvailability(String email);
 
-    UserProfile getUserProfile(String username);
+    UserProfilePayload getUserProfile(String username);
 
     ApiResponse giveAdmin(String username);
 
     ApiResponse removeAdmin(String username);
 
-    UserProfile setOrUpdateInfo(UserPrincipal currentUser, InfoRequest infoRequest);
+    UserProfilePayload setOrUpdateInfo(UserPrincipal currentUser, InfoPayload infoRequest);
 
 }

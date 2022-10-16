@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserSummary {
+public class UserSummaryPayload {
 
     private Long id;
     private String username;

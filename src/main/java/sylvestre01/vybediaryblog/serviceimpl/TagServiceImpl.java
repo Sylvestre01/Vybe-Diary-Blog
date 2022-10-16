@@ -1,7 +1,5 @@
 package sylvestre01.vybediaryblog.serviceimpl;
 
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -10,10 +8,13 @@ import sylvestre01.vybediaryblog.exception.ResourceNotFoundException;
 import sylvestre01.vybediaryblog.exception.UnauthorizedException;
 import sylvestre01.vybediaryblog.model.Tag;
 import sylvestre01.vybediaryblog.model.role.Role;
-import sylvestre01.vybediaryblog.payload.ApiResponse;
-import sylvestre01.vybediaryblog.payload.PagedResponse;
+import sylvestre01.vybediaryblog.response.ApiResponse;
+import sylvestre01.vybediaryblog.response.PagedResponse;
 import sylvestre01.vybediaryblog.repository.TagRepository;
 import sylvestre01.vybediaryblog.service.TagService;
+
+import java.time.LocalDateTime;
+
 @Service
 
 public class TagServiceImpl implements TagService {
@@ -48,7 +49,7 @@ public class TagServiceImpl implements TagService {
             tag.setName(newTag.getName());
             return tagRepository.save(tag);
         }
-        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to edit this tag");
+        ApiResponse apiResponse = new ApiResponse("You don't have permission to edit this tag", LocalDateTime.now());
 
         throw new UnauthorizedException(apiResponse);
 
@@ -60,10 +61,10 @@ public class TagServiceImpl implements TagService {
         if (tag.getCreatedBy().equals(currentUser.getId()) || currentUser.getAuthorities()
                 .contains(new SimpleGrantedAuthority(Role.ADMIN.toString()))) {
             tagRepository.deleteById(id);
-            return new ApiResponse(Boolean.TRUE, "You successfully deleted tag");
+            return new ApiResponse("You successfully deleted tag", LocalDateTime.now());
         }
 
-        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You don't have permission to delete this tag");
+        ApiResponse apiResponse = new ApiResponse("You don't have permission to delete this tag", LocalDateTime.now());
 
         throw new UnauthorizedException(apiResponse);
     }

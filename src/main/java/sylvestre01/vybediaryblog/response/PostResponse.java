@@ -1,4 +1,4 @@
-package sylvestre01.vybediaryblog.payload;
+package sylvestre01.vybediaryblog.response;
 
 import lombok.Data;
 
