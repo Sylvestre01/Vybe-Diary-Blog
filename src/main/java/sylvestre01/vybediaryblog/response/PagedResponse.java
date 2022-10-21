@@ -3,7 +3,6 @@ package sylvestre01.vybediaryblog.response;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Access;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

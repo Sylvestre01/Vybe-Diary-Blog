@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import sylvestre01.vybediaryblog.Security.CurrentUser;
 import sylvestre01.vybediaryblog.Security.UserPrincipal;
+import sylvestre01.vybediaryblog.exception.ResponseEntityErrorException;
 import sylvestre01.vybediaryblog.model.Album;
 import sylvestre01.vybediaryblog.payload.AlbumPayload;
 import sylvestre01.vybediaryblog.response.AlbumResponse;
@@ -32,10 +33,10 @@ public class AlbumController {
         this.photoService = photoService;
     }
 
-//    @ExceptionHandler(ResponseEntityErrorException.class)
-//    public ResponseEntity<ApiResponse> handleExceptions(ResponseEntityErrorException exception) {
-//        return exception.getApiResponse();
-//    }
+    @ExceptionHandler(ResponseEntityErrorException.class)
+    public ResponseEntity<ApiResponse> handleExceptions(ResponseEntityErrorException exception) {
+        return exception.getApiResponse();
+    }
 
     @GetMapping
     public PagedResponse<AlbumResponse> getAllAlbums(@RequestParam(name = "page") Integer page,

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class UserPrincipal implements UserDetails {
 
@@ -37,6 +36,7 @@ public class UserPrincipal implements UserDetails {
         this.userName = user.getUsername();
         this.email = user.getEmail();
         this.password = user.getPassword();
+
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         for (String userAuthority : user.getRole().toString().split(",")) {
             SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(userAuthority);

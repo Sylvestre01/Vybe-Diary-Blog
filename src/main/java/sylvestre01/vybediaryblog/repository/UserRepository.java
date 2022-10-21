@@ -6,9 +6,6 @@ import sylvestre01.vybediaryblog.Security.UserPrincipal;
 import sylvestre01.vybediaryblog.exception.ResourceNotFoundException;
 import sylvestre01.vybediaryblog.model.user.User;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {

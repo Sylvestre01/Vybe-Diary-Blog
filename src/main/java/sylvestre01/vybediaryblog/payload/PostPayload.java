@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Collections;
 import java.util.List;
 @Data
 public class PostPayload {
@@ -30,12 +31,5 @@ public class PostPayload {
         this.tags = tags;
     }
 
-    //    public void setTags(List<String> tags) {
-//
-//        if (tags == null) {
-//            this.tags = null;
-//        } else {
-//            this.tags = Collections.unmodifiableList(tags);
-//        }
-//    }
 }
+

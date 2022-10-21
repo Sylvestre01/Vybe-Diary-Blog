@@ -1,10 +1,14 @@
 package sylvestre01.vybediaryblog.model.user;
 
-import lombok.*;
-import sylvestre01.vybediaryblog.model.audit.BaseClass;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import sylvestre01.vybediaryblog.model.audit.UserBaseClass;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
 @Getter

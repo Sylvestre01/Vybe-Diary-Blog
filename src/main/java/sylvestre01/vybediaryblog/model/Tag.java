@@ -1,7 +1,8 @@
 package sylvestre01.vybediaryblog.model;
 
-import lombok.*;
-import sylvestre01.vybediaryblog.model.audit.BaseClass;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import sylvestre01.vybediaryblog.model.audit.UserBaseClass;
 
 import javax.persistence.*;

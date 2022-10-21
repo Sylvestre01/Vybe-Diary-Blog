@@ -9,7 +9,7 @@ public interface UserService {
 
     UserSummaryPayload getCurrentUser(UserPrincipal currentUser);
 
-    User addUser(User user);
+    User addUser(UserPayload user);
 
     ApiResponse deleteUser(String username, UserPrincipal currentUser);
 

@@ -30,17 +30,13 @@ import java.util.List;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
-
     private PhotoRepository photoRepository;
-
     private AlbumRepository albumRepository;
-
     @Autowired
     public PhotoServiceImpl(PhotoRepository photoRepository, AlbumRepository albumRepository) {
         this.photoRepository = photoRepository;
         this.albumRepository = albumRepository;
     }
-
     @Override
     public PagedResponse<PhotoResponse> getAllPhotos(int page, int size) {
         AppUtils.validatePageNumberAndSize(page, size);
@@ -62,13 +58,11 @@ public class PhotoServiceImpl implements PhotoService {
                 photos.getTotalPages(), photos.isLast());
 
     }
-
     @Override
     public PhotoResponse getPhoto(Long id) {
         Photo photo = photoRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("photo id could not be found"));
         return new PhotoResponse(photo.getId(), photo.getTitle(), photo.getUrl(), photo.getThumbnailUrl(), photo.getAlbum().getId());
     }
-
     @Override
     public PhotoResponse updatePhoto(Long id, PhotoPayload photoRequest, UserPrincipal currentUser) {
         Album album = albumRepository.findById(id)
@@ -88,9 +82,6 @@ public class PhotoServiceImpl implements PhotoService {
 
         throw new UnauthorizedException(apiResponse);
     }
-
-
-
     @Override
     public PhotoResponse addPhoto(PhotoPayload photoRequest, UserPrincipal currentUser) {
         Album album = albumRepository.findById(photoRequest.getAlbumId())
@@ -105,7 +96,6 @@ public class PhotoServiceImpl implements PhotoService {
 
         throw new UnauthorizedException(apiResponse);
     }
-
     @Override
     public ApiResponse deletePhoto(Long id, UserPrincipal currentUser) {
         Photo photo = photoRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Photo id could not be found"));
@@ -119,7 +109,6 @@ public class PhotoServiceImpl implements PhotoService {
         throw new UnauthorizedException(apiResponse);
 
     }
-
     @Override
     public PagedResponse<PhotoResponse> getAllPhotosByAlbum(Long albumId, int page, int size) {
         AppUtils.validatePageNumberAndSize(page, size);
@@ -133,7 +122,6 @@ public class PhotoServiceImpl implements PhotoService {
             photoResponses.add(new PhotoResponse(photo.getId(), photo.getTitle(), photo.getUrl(),
                     photo.getThumbnailUrl(), photo.getAlbum().getId()));
         }
-
         return new PagedResponse<>(photoResponses, photos.getNumber(), photos.getSize(), photos.getTotalElements(),
                 photos.getTotalPages(), photos.isLast());
     }

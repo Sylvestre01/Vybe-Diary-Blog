@@ -28,20 +28,15 @@ import java.time.LocalDateTime;
 
 @Service
 public class CommentServiceImpl implements CommentService {
-
     private CommentRepository commentRepository;
-
     private PostRepository postRepository;
-
     private UserRepository userRepository;
-
     @Autowired
     public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository, UserRepository userRepository) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
     }
-
     @Override
     public PagedResponse<Comment> getAllComments(Long postId, int page, int size) {
 
@@ -53,7 +48,6 @@ public class CommentServiceImpl implements CommentService {
         return new PagedResponse<>(comments.getContent(), comments.getNumber(), comments.getSize(),
                 comments.getTotalElements(), comments.getTotalPages(), comments.isLast());
     }
-
     @Override
     public Comment addComment(CommentPayload commentRequest, Long postId, UserPrincipal currentUser) {
         User user = userRepository.getUser(currentUser);
@@ -66,7 +60,6 @@ public class CommentServiceImpl implements CommentService {
         comment.setEmail(currentUser.getEmail());
         return commentRepository.save(comment);
     }
-
     @Override
     public Comment getComment(Long postId, Long id) {
         Post post = postRepository.findById(postId)
@@ -78,7 +71,6 @@ public class CommentServiceImpl implements CommentService {
             throw new BlogapiException(HttpStatus.BAD_REQUEST, "Comment does not belong to post");
         }
     }
-
     @Override
     public Comment updateComment(Long postId, Long id, CommentPayload commentRequest, UserPrincipal currentUser) {
         Post post = postRepository.findById(postId)
@@ -98,7 +90,6 @@ public class CommentServiceImpl implements CommentService {
 
         throw new BlogapiException(HttpStatus.UNAUTHORIZED, "You don't have permission to update this comment");
     }
-
     @Override
     public ApiResponse deleteComment(Long postId, Long id, UserPrincipal currentUser) {
         Post post = postRepository.findById(postId)
@@ -118,4 +109,5 @@ public class CommentServiceImpl implements CommentService {
 
         throw new BlogapiException(HttpStatus.UNAUTHORIZED, "You don't have permission to delete this comment");
     }
+
 }

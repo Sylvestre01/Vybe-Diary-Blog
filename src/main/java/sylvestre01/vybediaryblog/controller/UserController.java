@@ -80,9 +80,9 @@ public class UserController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
-        User user1 = userService.addUser(user);
-        return  new ResponseEntity<>(user1, HttpStatus.OK);
+    public ResponseEntity<User> addUser(@Valid @RequestBody UserPayload user) {
+        User newUser = userService.addUser(user);
+        return  new ResponseEntity<>(newUser, HttpStatus.OK);
     }
 
     @PutMapping("/{username}")

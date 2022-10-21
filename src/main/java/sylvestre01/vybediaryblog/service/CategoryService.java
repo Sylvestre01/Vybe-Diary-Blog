@@ -7,7 +7,7 @@ import sylvestre01.vybediaryblog.exception.UnauthorizedException;
 import sylvestre01.vybediaryblog.model.Category;
 import sylvestre01.vybediaryblog.response.ApiResponse;
 import sylvestre01.vybediaryblog.response.PagedResponse;
-@Service
+
 public interface CategoryService {
 
     PagedResponse<Category> getAllCategories(int page, int size);

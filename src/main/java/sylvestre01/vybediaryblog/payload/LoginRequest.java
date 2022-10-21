@@ -1,12 +1,12 @@
 package sylvestre01.vybediaryblog.payload;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoginRequest {
 
     @NotBlank

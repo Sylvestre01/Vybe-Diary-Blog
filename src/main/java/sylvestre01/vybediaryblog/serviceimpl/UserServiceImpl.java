@@ -1,5 +1,6 @@
 package sylvestre01.vybediaryblog.serviceimpl;
 
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,6 +21,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Service
+@NoArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
@@ -36,6 +38,9 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public UserServiceImpl(UserRepository userRepository) {
+    }
+
     @Override
     public UserSummaryPayload getCurrentUser(UserPrincipal currentUser) {
         return new UserSummaryPayload(currentUser.getId(), currentUser.getUsername(), currentUser.getFirstName(),
@@ -43,18 +48,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User addUser(User user) {
-        if(userRepository.existsByUsername(user.getUsername())) {
-            ApiResponse apiResponse = new ApiResponse("Username is already taken", LocalDateTime.now());
-            throw new BadRequestException(apiResponse);
-        }
-        if (userRepository.existsByEmail(user.getEmail())) {
-            ApiResponse apiResponse = new ApiResponse("Email is already taken", LocalDateTime.now());
-            throw new BadRequestException(apiResponse);
-        }
-        user.setRole(user.getRole());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+    public User addUser(UserPayload user) {
+        User newUser = user.getUserFromPayload();
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        newUser.setRole(newUser.getRole());
+        return userRepository.save(newUser);
     }
 
     @Override
@@ -150,6 +148,8 @@ public class UserServiceImpl implements UserService {
         ApiResponse apiResponse = new ApiResponse("You don't have permission to update users profile", LocalDateTime.now(), HttpStatus.FORBIDDEN);
         throw new AccessDeniedException(apiResponse);
     }
+
+
 }
 
 

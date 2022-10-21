@@ -31,14 +31,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 @Service
-@RequiredArgsConstructor
 public class AlbumServiceImpl implements AlbumService {
-
     private AlbumRepository albumRepository;
-
-
     private UserRepository userRepository;
-
 
     private ModelMapper modelMapper;
 
@@ -60,13 +55,10 @@ public class AlbumServiceImpl implements AlbumService {
             return new PagedResponse<>(Collections.emptyList(), albums.getNumber(), albums.getSize(), albums.getTotalElements(),
                     albums.getTotalPages(), albums.isLast());
         }
-
         List<AlbumResponse> albumResponses = Arrays.asList(modelMapper.map(albums.getContent(), AlbumResponse[].class));
-
         return new PagedResponse<>(albumResponses, albums.getNumber(), albums.getSize(), albums.getTotalElements(), albums.getTotalPages(),
                 albums.isLast());
     }
-
     @Override
     public ResponseEntity<Album> addAlbum(AlbumPayload albumRequest, UserPrincipal currentUser) {
         User user = userRepository.getUser(currentUser);
@@ -77,13 +69,11 @@ public class AlbumServiceImpl implements AlbumService {
 
         return new ResponseEntity<>(newAlbum, HttpStatus.CREATED);
     }
-
     @Override
     public ResponseEntity<Album> getAlbum(Long id) {
         Album album = albumRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("album id was not found"));
         return new ResponseEntity<>(album, HttpStatus.OK);
     }
-
     @Override
     public ResponseEntity<AlbumResponse> updateAlbum(Long id, AlbumPayload newAlbum, UserPrincipal currentUser) {
         Album album = albumRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("album id not found"));
@@ -103,7 +93,6 @@ public class AlbumServiceImpl implements AlbumService {
         throw new BlogapiException(HttpStatus.UNAUTHORIZED, "You don't have permission to make this operation");
 
     }
-
     @Override
     public ResponseEntity<ApiResponse> deleteAlbum(Long id, UserPrincipal currentUser) {
         Album album = albumRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("album id cannot be found"));
@@ -117,7 +106,6 @@ public class AlbumServiceImpl implements AlbumService {
         throw new BlogapiException(HttpStatus.UNAUTHORIZED, "You don't have permission to make this operation");
 
     }
-
     @Override
     public PagedResponse<Album> getUserAlbums(String username, int page, int size) {
         User user = userRepository.getUserByName(username);

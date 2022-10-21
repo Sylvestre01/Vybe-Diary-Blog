@@ -3,13 +3,14 @@ package sylvestre01.vybediaryblog.response;
 import lombok.Data;
 
 @Data
-public class AuthenticationResponse {
+public class LoginResponse {
 
     private String accessToken;
 
     private String tokenType = "Bearer";
 
-    public AuthenticationResponse(String accessToken) {
+    public LoginResponse(String accessToken) {
         this.accessToken = accessToken;
     }
+
 }

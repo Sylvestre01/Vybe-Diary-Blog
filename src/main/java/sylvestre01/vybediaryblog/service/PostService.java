@@ -7,6 +7,7 @@ import sylvestre01.vybediaryblog.response.PagedResponse;
 import sylvestre01.vybediaryblog.payload.PostPayload;
 import sylvestre01.vybediaryblog.response.PostResponse;
 
+
 public interface PostService {
 
     PagedResponse<Post> getAllPosts(int page, int size);

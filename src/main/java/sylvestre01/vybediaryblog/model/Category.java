@@ -1,11 +1,15 @@
 package sylvestre01.vybediaryblog.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.*;
-import sylvestre01.vybediaryblog.model.audit.BaseClass;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import sylvestre01.vybediaryblog.model.audit.UserBaseClass;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.List;
 
 @Entity

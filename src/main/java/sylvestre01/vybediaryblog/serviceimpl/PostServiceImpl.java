@@ -37,16 +37,10 @@ import static sylvestre01.vybediaryblog.utils.AppConstant.*;
 
 @Service
 public class PostServiceImpl implements PostService {
-
-
     private PostRepository postRepository;
-
     private UserRepository userRepository;
-
     private CategoryRepository categoryRepository;
-
     private TagRepository tagRepository;
-
     @Autowired
     public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, CategoryRepository categoryRepository, TagRepository tagRepository) {
         this.postRepository = postRepository;
@@ -54,42 +48,33 @@ public class PostServiceImpl implements PostService {
         this.categoryRepository = categoryRepository;
         this.tagRepository = tagRepository;
     }
-
     @Override
     public PostResponse addPost(PostPayload postRequest, UserPrincipal currentUser) {
         User user = userRepository.findById(currentUser.getId()).orElseThrow(()-> new ResourceNotFoundException("User Id is not found"));
         Category category = categoryRepository.findById(postRequest.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("category id was not found"));
-//        List<Tag> tags = tagRepository.findAll();
-
+                .orElseThrow(() -> new ResourceNotFoundException("Category id was not found"));
+        List<Tag> tags = tagRepository.findAll();
         Post post = new Post();
         post.setBody(postRequest.getBody());
         post.setTitle(postRequest.getTitle());
         post.setCategory(category);
         post.setUser(user);
-//        post.setTags(tags);
+        post.setTags(tags);
 
         Post newPost = postRepository.save(post);
 
         PostResponse postResponse = new PostResponse();
-
         postResponse.setTitle(newPost.getTitle());
         postResponse.setBody(newPost.getBody());
         postResponse.setCategory(newPost.getCategory().getName());
 
         List<String> tagNames = new ArrayList<>(newPost.getTags().size());
-
         for (Tag tag : newPost.getTags()) {
             tagNames.add(tag.getName());
         }
-
         postResponse.setTags(tagNames);
-
         return postResponse;
-
     }
-
-
     @Override
     public PagedResponse<Post> getAllPosts(int page, int size) {
         validatePageNumberAndSize(page, size);
@@ -103,9 +88,6 @@ public class PostServiceImpl implements PostService {
         return new PagedResponse<>(content, posts.getNumber(), posts.getSize(), posts.getTotalElements(),
                 posts.getTotalPages(), posts.isLast());
     }
-
-
-
     @Override
     public PagedResponse<Post> getPostsByCreatedBy(String username, int page, int size) {
         validatePageNumberAndSize(page, size);
@@ -118,12 +100,11 @@ public class PostServiceImpl implements PostService {
         return new PagedResponse<>(content, posts.getNumber(), posts.getSize(), posts.getTotalElements(),
                 posts.getTotalPages(), posts.isLast());
     }
-
     @Override
     public PagedResponse<Post> getPostsByCategory(Long id, int page, int size) {
         AppUtils.validatePageNumberAndSize(page, size);
         Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("category id cannot be found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category id cannot be found"));
 
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
         Page<Post> posts = postRepository.findByCategory(category.getId(), pageable);
@@ -133,12 +114,11 @@ public class PostServiceImpl implements PostService {
         return new PagedResponse<>(content, posts.getNumber(), posts.getSize(), posts.getTotalElements(),
                 posts.getTotalPages(), posts.isLast());
     }
-
     @Override
     public PagedResponse<Post> getPostsByTag(Long id, int page, int size) {
         AppUtils.validatePageNumberAndSize(page, size);
 
-        Tag tag = tagRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("tag id could not be found"));
+        Tag tag = tagRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Tag id could not be found"));
 
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
 
@@ -149,12 +129,11 @@ public class PostServiceImpl implements PostService {
         return new PagedResponse<>(content, posts.getNumber(), posts.getSize(), posts.getTotalElements(),
                 posts.getTotalPages(), posts.isLast());
     }
-
     @Override
     public Post updatePost(Long id, PostPayload newPostRequest, UserPrincipal currentUser) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("post id was not found"));
+        Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post id was not found"));
         Category category = categoryRepository.findById(newPostRequest.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("category id was not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category id was not found"));
         if (post.getUser().getId().equals(currentUser.getId())
                 || currentUser.getAuthorities().contains(new SimpleGrantedAuthority(Role.ADMIN.toString()))) {
             post.setTitle(newPostRequest.getTitle());
@@ -163,10 +142,8 @@ public class PostServiceImpl implements PostService {
             return postRepository.save(post);
         }
         ApiResponse apiResponse = new ApiResponse("You don't have permission to edit this post", LocalDateTime.now());
-
         throw new UnauthorizedException(apiResponse);
     }
-
     @Override
     public ApiResponse deletePost(Long id, UserPrincipal currentUser) {
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("post id was not found"));
@@ -180,10 +157,9 @@ public class PostServiceImpl implements PostService {
 
             throw new UnauthorizedException(apiResponse);
     }
-
     @Override
     public Post getPost(Long id) {
-        return postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("post id not found"));
+        return postRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Post id not found"));
     }
 
     private void validatePageNumberAndSize(int page, int size) {
@@ -194,9 +170,8 @@ public class PostServiceImpl implements PostService {
         if (size < 0) {
             throw new BadRequestException("Size number cannot be less than zero.");
         }
-
         if (size > AppConstant.MAX_PAGE_SIZE) {
             throw new BadRequestException("Page size must not be greater than " + AppConstant.MAX_PAGE_SIZE);
         }
     }
-    }
+}

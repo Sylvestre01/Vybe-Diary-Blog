@@ -26,14 +26,11 @@ import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
-
     private CategoryRepository categoryRepository;
-
     @Autowired
     public CategoryServiceImpl(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
-
     @Override
     public PagedResponse<Category> getAllCategories(int page, int size) {
         AppUtils.validatePageNumberAndSize(page, size);
@@ -47,19 +44,16 @@ public class CategoryServiceImpl implements CategoryService {
         return new PagedResponse<>(content, categories.getNumber(), categories.getSize(), categories.getTotalElements(),
                 categories.getTotalPages(), categories.isLast());
     }
-
     @Override
     public ResponseEntity<Category> getCategory(Long id) {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category id was not found"));
         return new ResponseEntity<>(category, HttpStatus.OK);
     }
-
     @Override
     public ResponseEntity<Category> addCategory(Category category, UserPrincipal currentUser) {
         Category newCategory = categoryRepository.save(category);
         return new ResponseEntity<>(newCategory, HttpStatus.CREATED);
     }
-
     @Override
     public ResponseEntity<Category> updateCategory(Long id, Category newCategory, UserPrincipal currentUser)
             throws UnauthorizedException {
@@ -73,7 +67,6 @@ public class CategoryServiceImpl implements CategoryService {
 
         throw new UnauthorizedException("You don't have permission to edit this category");
     }
-
     @Override
     public ResponseEntity<ApiResponse> deleteCategory(Long id, UserPrincipal currentUser) throws UnauthorizedException {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("category id was not found"));

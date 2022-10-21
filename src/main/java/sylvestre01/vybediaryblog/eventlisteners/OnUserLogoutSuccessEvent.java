@@ -1,6 +1,5 @@
 package sylvestre01.vybediaryblog.eventlisteners;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;
